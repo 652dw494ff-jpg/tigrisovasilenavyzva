@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>TIGRISOVA ŠÍLENÁ VÝZVA</title>
+<style>
+:root{--ink:#263238;--orange:#ff8a22;--yellow:#ffd34e;--cream:#fff8e8;--green:#3caa75;--purple:#8665d8}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:linear-gradient(145deg,#fff2c8,#d9f4e6);min-height:100vh}
+button{font:inherit;border:0;cursor:pointer}
+.app{max-width:1120px;margin:auto;padding:18px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:58px;height:58px;border-radius:19px;background:linear-gradient(145deg,#ffb33c,#ff7626);display:grid;place-items:center;font-size:34px;box-shadow:0 5px 0 #d95c1c}
+h1{font-size:clamp(20px,4vw,32px);line-height:1;margin:0;font-weight:1000;letter-spacing:-1px}.sub{font-size:12px;font-weight:800;color:#687a72;letter-spacing:2px;margin-top:5px}
+.stats{display:flex;gap:9px}.pill{background:#fff;border:2px solid #f0e4c9;border-radius:16px;padding:9px 13px;font-weight:900;box-shadow:0 3px 0 #e7d9b9}
+.hero{margin:22px 0 18px;background:linear-gradient(120deg,#ffb33d,#ff7b32);border-radius:26px;padding:22px;color:#fff;position:relative;overflow:hidden;box-shadow:0 7px 0 #dc6c27}
+.hero:after{content:"🐯";position:absolute;right:25px;bottom:-25px;font-size:130px;transform:rotate(-9deg);filter:drop-shadow(0 5px 0 #bd5b21)}
+.hero h2{margin:0 0 7px;font-size:clamp(23px,5vw,36px);max-width:70%;font-weight:1000}.hero p{margin:0;max-width:65%;font-weight:650;opacity:.95}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:22px 2px 12px}.section-title h3{margin:0;font-size:21px}.section-title span{font-size:12px;font-weight:800;color:#718078}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{min-height:175px;border-radius:23px;padding:16px;text-align:left;position:relative;overflow:hidden;color:#27343a;box-shadow:0 6px 0 rgba(39,52,58,.13);transition:transform .12s}
+.card:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(39,52,58,.13)}
+.card .emoji{font-size:48px;display:block;margin-bottom:9px;filter:drop-shadow(0 3px 0 #ffffff80)}
+.card strong{display:block;font-size:19px;font-weight:1000}.card small{display:block;margin-top:4px;font-weight:700;opacity:.75}
+.card .tag{position:absolute;right:12px;top:12px;background:#ffffffb8;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:900}
+.c1{background:linear-gradient(135deg,#a8e8ba,#55c98a)}.c2{background:linear-gradient(135deg,#ffe58b,#ffbb48)}.c3{background:linear-gradient(135deg,#b9dcff,#7ab5ff)}.c4{background:linear-gradient(135deg,#d9c5ff,#a88aef)}
+.bottom{display:flex;gap:10px;margin:20px 0 5px}.bottom button{flex:1;background:white;border:2px solid #f0e4c9;border-radius:16px;padding:13px 8px;font-weight:900;box-shadow:0 4px 0 #e7d9b9}
+.note{text-align:center;color:#718078;font-size:11px;font-weight:700;margin:17px 0}
+.screen{display:none}.screen.active{display:block}.game-wrap{background:#fff;border-radius:24px;padding:14px;box-shadow:0 6px 0 #e5d9bd}
+.game-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.game-head h2{margin:0;font-size:22px}.back{background:#f2f4ef;border-radius:12px;padding:9px 13px;font-weight:900}
+canvas{display:block;width:100%;height:auto;aspect-ratio:900/470;max-height:520px;border-radius:18px;background:#9ce4e2;touch-action:none;user-select:none;-webkit-user-select:none}
+.tower-select{background:linear-gradient(135deg,#fff5d9,#eaf8ee);border:2px solid #f0e4c9;border-radius:20px;padding:16px;margin:8px 0 14px}
+.tower-select h3{margin:0 0 5px;font-size:20px}.tower-select p{margin:0 0 13px;color:#718078;font-size:13px;font-weight:700}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mode-card{border-radius:17px;padding:14px 10px;text-align:left;min-height:125px;font-weight:900;box-shadow:0 4px 0 #d9d0bd}.mode-card span{display:block;font-size:36px;margin-bottom:6px}.mode-card small{display:block;font-size:11px;line-height:1.3;margin-top:4px;font-weight:700}.mode-normal{background:linear-gradient(135deg,#ffe58b,#ffb64d)}.mode-lava{background:linear-gradient(135deg,#ffc18a,#ff7251);color:#542b20}
+#canvasWrap{display:none}.touch-controls{display:none;gap:9px;align-items:center;justify-content:center;margin-top:12px;touch-action:none}.touch-controls button{min-width:62px;min-height:55px;border-radius:16px;background:#f0f4ed;border:2px solid #dce7d9;font-size:23px;font-weight:1000;box-shadow:0 4px 0 #cbd8c9;touch-action:none}.touch-controls .jump-btn{background:#ffad35;color:#fff;border-color:#f09a2d;min-width:100px}.touch-controls button:active{transform:translateY(3px);box-shadow:0 1px 0 #cbd8c9}
+@media(max-width:600px){
+ body{min-height:100dvh}.app{padding:10px}.top{gap:8px}.brand{gap:8px;min-width:0}.logo{width:45px;height:45px;border-radius:14px;font-size:27px;flex:none}h1{font-size:clamp(16px,4.7vw,22px);letter-spacing:-.6px}.sub{font-size:9px;letter-spacing:1.3px}.stats{gap:5px}.pill{padding:7px 9px;border-radius:12px;font-size:12px;white-space:nowrap}
+ .hero{margin:14px 0;padding:17px 15px;border-radius:20px}.hero h2{font-size:24px;max-width:78%}.hero p{font-size:13px;max-width:78%}.hero:after{font-size:78px;right:-3px;bottom:-16px}
+ .section-title{margin:17px 2px 10px;gap:6px}.section-title h3{font-size:18px}.section-title span{font-size:9px;text-align:right}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{min-height:148px;padding:12px;border-radius:18px;box-shadow:0 4px 0 rgba(39,52,58,.13)}.card .emoji{font-size:39px;margin-bottom:5px}.card strong{font-size:16px;line-height:1.15}.card small{font-size:11px;line-height:1.25}.card .tag{right:8px;top:8px;padding:4px 6px;font-size:8px}
+ .bottom{gap:7px;margin:16px 0 5px}.bottom button{font-size:11px;padding:12px 5px;border-radius:13px}.note{font-size:10px;margin:13px 0}
+ .game-wrap{padding:10px;border-radius:19px}.game-head{display:grid;grid-template-columns:auto 1fr auto;gap:6px}.game-head h2{font-size:16px;text-align:center}.back{padding:9px 10px;font-size:12px}.game-head .pill{font-size:12px}
+ #canvas{width:100%;height:auto;aspect-ratio:900/470;max-height:56dvh;object-fit:contain;border-radius:14px}
+  .app{padding:7px}.game-wrap{padding:7px}.game-head{margin-bottom:7px}
+  .touch-controls{gap:0}.touch-controls button:not(.jump-btn){display:none}.touch-controls .jump-btn{max-width:none;width:100%;min-height:54px}
+ .controls{justify-content:center}.controls .muted{width:100%;text-align:center;font-size:11px}.controls .action{width:100%;padding:13px}
+ .touch-controls{display:flex}.touch-controls button{flex:1;max-width:90px;min-width:0;min-height:58px}.touch-controls .jump-btn{max-width:125px;flex:1.4}
+ .tower-select{padding:12px;border-radius:17px}.tower-select h3{font-size:18px}.mode-card{min-height:125px;padding:11px 9px}.mode-card span{font-size:32px}
+ .shop-grid{gap:8px}.shop-item{padding:11px 7px}.shop-item .face{font-size:38px}
+}
+@media(max-width:360px){.stats{width:100%;justify-content:flex-end}.hero h2{font-size:21px}.card{min-height:138px}.card small{font-size:10px}.mode-grid{grid-template-columns:1fr}.mode-card{min-height:100px}}
+
+.controls{display:flex;gap:10px;margin-top:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.action{background:var(--orange);color:white;border-radius:14px;padding:12px 18px;font-weight:1000;box-shadow:0 4px 0 #d75f1c}.muted{font-size:12px;color:#718078;font-weight:700}
+.overlay{position:fixed;inset:0;background:#14251dcc;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.overlay.show{display:flex}.modal{background:#fffaf0;border-radius:25px;padding:25px;max-width:390px;width:100%;text-align:center;box-shadow:0 8px 0 #d8c8a5}.modal .big{font-size:60px}.modal h2{margin:5px 0}.modal p{color:#62716a;font-weight:700}
+.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.shop-item{background:#fff;border-radius:18px;padding:15px;text-align:center;border:2px solid #f0e4c9}.shop-item .face{font-size:45px}.shop-item button{margin-top:8px;background:#ffb333;border-radius:10px;padding:8px 12px;font-weight:900}
+
+.factory-top{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:1000;color:#65736d;margin:8px 2px}
+.factory-scene{height:155px;border-radius:18px;background:linear-gradient(180deg,#26374b,#526174);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.factory-scene:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 88px,#ffffff0d 90px 94px)}
+.factory-lights{position:absolute;top:12px;left:15px;font-size:19px;letter-spacing:8px}
+.factory-machine{font-size:76px;filter:drop-shadow(0 5px 2px #1118)}
+.factory-door{position:absolute;right:28px;bottom:0;font-size:75px}
+.factory-tiger{position:absolute;left:22px;bottom:5px;font-size:45px}
+.factory-card{background:linear-gradient(135deg,#fff8e8,#edf5ff);border:2px solid #eee1c6;border-radius:18px;padding:15px;margin-bottom:12px}
+.factory-card h3{margin:0 0 5px;font-size:20px}.factory-card p{margin:5px 0 12px;color:#65736d;font-weight:700;font-size:13px}
+.factory-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.factory-buttons button{min-height:62px;border-radius:14px;background:#fff;border:2px solid #e6dfd0;box-shadow:0 4px 0 #d8d0c1;font-size:27px;font-weight:1000}
+.factory-buttons button:active{transform:translateY(3px);box-shadow:0 1px 0 #d8d0c1}
+.factory-buttons .wide{grid-column:1/-1;font-size:16px;min-height:48px;background:#ffb33d;color:#fff;border:0}
+.factory-feedback{min-height:22px;font-weight:900!important;color:#7253bb!important;margin:10px 0 0!important}
+@media(max-width:520px){.factory-scene{height:125px}.factory-card{padding:12px}.factory-card h3{font-size:17px}.factory-buttons{gap:7px}.factory-buttons button{min-height:56px;font-size:23px}}
+
+
+.campaign-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:12px}
+.campaign-grid button{padding:10px 4px;border-radius:10px;background:#fff;border:2px solid #e5ddce;font-weight:1000}
+.campaign-grid button.locked{opacity:.35;background:#e7e8e5}
+.campaign-grid button.done{background:#c8f2d4;border-color:#65bf83}
+.campaign-grid button.current{background:#ffcf70;border-color:#f29a2c}
+.game-hint{padding:10px;border-radius:12px;background:#eef4fa;font-size:12px;font-weight:800;margin-top:10px}
+\n@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card{min-height:205px}.hero{padding:30px}.hero:after{font-size:170px}}
+@media(max-width:420px){.app{padding:13px}.pill{padding:8px 10px;font-size:13px}.card{min-height:158px;padding:13px}.card strong{font-size:17px}.hero p{max-width:75%}.hero:after{right:0;font-size:90px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+ <div class="brand"><div class="logo">🐯</div><div><h1>TIGRISOVA ŠÍLENÁ VÝZVA</h1><div class="sub">HRAJ • SOUTĚŽ • VYHRÁVEJ</div></div></div>
+ <div class="stats"><div class="pill">🪙 <span id="coins">0</span> T$</div><div class="pill">⭐ LVL <span id="level">1</span></div></div>
+</header>
+<main id="menu" class="screen active">
+ <section class="hero"><h2>Jsi připraven na výzvu?</h2><p>Vyber si minihru, překonej rekord a nasbírej tygří mince!</p></section>
+ <div class="section-title"><h3>🎮 Vyber si minihru</h3><span>7 HRATELNÝCH MINIHER</span></div>
+ <div class="grid">
+  <button class="card c1" onclick="startGame()"><span class="tag">HRATELNÉ</span><span class="emoji">🌴</span><strong>Tygří ostrov</strong><small>Skákej přes překážky a sbírej hvězdy.</small></button>
+  <button class="card c2" onclick="startTower()"><span class="tag">HRATELNÉ</span><span class="emoji">🏗️</span><strong>Tygří věž</strong><small>Postav co nejvyšší věž z kostek.</small></button>
+  <button class="card c3" onclick="startSpace()"><span class="tag">HRATELNÉ</span><span class="emoji">🚀</span><strong>Tygří vesmír</strong><small>Proleť vesmírem a vyhni se meteoritům.</small></button>
+  <button class="card c4" onclick="startFactory()"><span class="tag">HRATELNÉ</span><span class="emoji">🏭</span><strong>Tajemná továrna</strong><small>Odemkni dveře, rozlušti kódy a uteč z továrny.</small></button>
+  <button class="card c1" onclick="startFactoryCampaign()"><span class="tag">NOVÉ</span><span class="emoji">🧑‍🔧</span><strong>Tovární mise</strong><small>50 levelů, úkoly a odměny za každý postup.</small></button>
+  <button class="card c2" onclick="startTigerCatch()"><span class="tag">NOVÉ</span><span class="emoji">🐯</span><strong>Lov tygříků</strong><small>Chytej rychlé tygříky do záchranných přepravek.</small></button>
+  <button class="card c3" onclick="startDefense()"><span class="tag">NOVÉ</span><span class="emoji">🛡️</span><strong>Obrana věže</strong><small>Ochraň věž před vlnami tygřích válečníků.</small></button>
+ </div>
+ <div class="bottom"><button onclick="showShop()">🛍️ OBCHOD</button><button onclick="showRecords()">🏆 REKORDY</button><button onclick="showAbout()">ℹ️ INFO</button></div>
+ <div class="note">TIGRISOVA ŠÍLENÁ VÝZVA • BETA 1.3 • Tvůj tygří svět právě začíná</div>
+</main>
+<section id="game" class="screen">
+ <div class="game-wrap">
+  <div class="game-head"><button class="back" onclick="backMenu()">← MENU</button><h2 id="gameTitle">🌴 Tygří ostrov</h2><div class="pill">⭐ <span id="score">0</span></div></div>
+  <div id="towerSelect" class="tower-select" style="display:none"><h3>🏗️ Vyber si režim věže</h3><p>Dva způsoby, jak zdolat Tygří věž. Který zvládneš?</p><div class="mode-grid"><button class="mode-card mode-normal" onclick="startTowerMode('normal')"><span>🧱</span>Normální věž<small>Pokládej pohyblivé kostky na sebe a postav co nejvyšší věž.</small></button><button class="mode-card mode-lava" onclick="startTowerMode('lava')"><span>🌋</span>Země je láva<small>Skákej po plošinách vzhůru. Láva stoupá a nesmí tě dostihnout!</small></button></div></div>
+  <div id="canvasWrap"><canvas id="canvas" width="900" height="470" aria-label="Herní plocha"></canvas>
+   <div class="touch-controls" id="lavaControls"><button aria-label="Doleva" onpointerdown="holdMove(-1,event)" onpointerup="releaseMove(event)" onpointerleave="releaseMove(event)" onpointercancel="releaseMove(event)">◀</button><button class="jump-btn" onclick="lavaJump()">SKOK ⬆</button><button aria-label="Doprava" onpointerdown="holdMove(1,event)" onpointerup="releaseMove(event)" onpointerleave="releaseMove(event)" onpointercancel="releaseMove(event)">▶</button></div>
+  </div>
+  <div id="factoryPanel" style="display:none">
+   <div class="factory-top"><span>🏭 TAJEMNÁ TOVÁRNA</span><span id="factoryProgress">MÍSTNOST 1 / 3</span></div>
+   <div class="factory-scene"><div class="factory-lights">🟢 🟡 🔴</div><div class="factory-machine">⚙️</div><div class="factory-door">🚪</div><div class="factory-tiger">🐯</div></div>
+   <div class="factory-card"><h3 id="factoryTitle">Místnost 1: Aktivuj generátor</h3><p id="factoryText">Zapamatuj si pořadí světel a zopakuj ho.</p><div id="factoryTask"></div><p class="factory-feedback" id="factoryFeedback" aria-live="polite"></p></div>
+   <button class="action" id="factoryRestart" onclick="startFactory()">↻ ZNOVU OD ZAČÁTKU</button>
+  </div>
+  <div id="campaignPanel" style="display:none">
+   <div class="factory-top"><span>🧑‍🔧 TOVÁRNÍ MISE</span><span id="campaignLevel">LEVEL 1 / 50</span></div>
+   <div class="factory-scene"><div class="factory-lights">🟢 🟡 🔴</div><div class="factory-machine">🏭</div><div class="factory-door">🚪</div><div class="factory-tiger">🧑‍🔧</div></div>
+   <div class="factory-card"><h3 id="campaignTitle">Level 1: Kontrola stroje</h3><p id="campaignDesc">Vyřeš úkol a odemkni další level.</p><div id="campaignTask"></div><p class="factory-feedback" id="campaignFeedback" aria-live="polite"></p></div>
+   <div class="controls"><button class="back" onclick="backMenu()">← MENU</button><button class="action" onclick="startFactoryCampaign()">↻ Opakovat level</button></div>
+  </div>
+  <div class="controls" id="gameControls"><div class="muted" id="controlHint">Počítač: mezerník / šipka nahoru • Mobil: klepni pro skok</div><button class="action" onclick="restartGame()">↻ ZNOVU</button></div>
+ </div>
+</section>
+<section id="shop" class="screen">
+ <div class="game-wrap"><div class="game-head"><button class="back" onclick="backMenu()">← MENU</button><h2>🛍️ Tygří obchod</h2><div class="pill">🪙 <span id="shopcoins">0</span></div></div>
+ <p class="muted">Nakupuj vzhledy za mince získané ve výzvách.</p><div class="shop-grid" id="shopgrid"></div></div>
+</section>
+<section id="records" class="screen"><div class="game-wrap"><div class="game-head"><button class="back" onclick="backMenu()">← MENU</button><h2>🏆 Tvoje rekordy</h2></div><h3>🌴 Tygří ostrov: <span id="best">0</span> bodů</h3><h3>🏗️ Normální věž: <span id="towerBest">0</span> pater</h3><h3>🌋 Země je láva: <span id="lavaBest">0</span> m</h3><h3>🏭 Tovární mise: <span id="factoryBest">1</span> / 50 levelů</h3><p class="muted">Překonávej vlastní rekordy a sbírej zkušenosti.</p></div></section>
+</div>
+<div class="overlay" id="modal"><div class="modal"><div class="big" id="modalEmoji">🐯</div><h2 id="modalTitle">Výzva dokončena!</h2><p id="modalText"></p><button class="action" id="modalBtn" onclick="closeModal()">Pokračovat</button></div></div>
+<script>
+const $=id=>document.getElementById(id);
+let data=JSON.parse(localStorage.getItem('tigerChallengeSave')||'{}');
+data.coins=data.coins||0;data.best=data.best||0;data.towerBest=data.towerBest||0;data.lavaBest=data.lavaBest||0;data.xp=data.xp||0;data.skin=data.skin||'classic';data.owned=data.owned||['classic'];data.factoryLevel=data.factoryLevel||1;data.factoryDone=data.factoryDone||[];
+function save(){localStorage.setItem('tigerChallengeSave',JSON.stringify(data));refresh()}
+function refresh(){$('coins').textContent=data.coins;$('level').textContent=1+Math.floor(data.xp/100);$('shopcoins').textContent=data.coins;$('best').textContent=data.best;$('towerBest').textContent=data.towerBest;if($('lavaBest'))$('lavaBest').textContent=data.lavaBest}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active')}
+function backMenu(){stop=true;show('menu');['factoryPanel','campaignPanel'].forEach(id=>$(id).style.display='none');$('gameControls').style.display='flex';$('canvasWrap').style.display='none';refresh()}
+function showModal(title,text,emoji='🐯',btn='Pokračovat'){ $('modalTitle').textContent=title;$('modalText').textContent=text;$('modalEmoji').textContent=emoji;$('modalBtn').textContent=btn;$('modal').classList.add('show')}
+function closeModal(){$('modal').classList.remove('show')}
+function coming(name){showModal('Už brzy!','Minihra „'+name+'“ je v plánu. Teď si můžeš zahrát Tygří ostrov.','🚧')}
+function showAbout(){showModal('O hře','TIGRISOVA ŠÍLENÁ VÝZVA je vlastní arkádový projekt. Toto je hratelná beta verze s ostrovem a dvěma režimy věže.','🐯')}
+function showRecords(){show('records');refresh()}
+const skins=[{id:'classic',name:'Klasický tygr',face:'🐯',price:0},{id:'cool',name:'Cool tygr',face:'😎',price:35},{id:'crown',name:'Král džungle',face:'👑',price:60},{id:'robot',name:'Robotický tygr',face:'🤖',price:90}];
+function showShop(){show('shop');$('shopgrid').innerHTML=skins.map(s=>`<div class="shop-item"><div class="face">${s.face}</div><b>${s.name}</b><br><small>${data.owned.includes(s.id)?(data.skin===s.id?'Vybráno':'Vlastníš'):s.price+' T$'}</small><br><button onclick="buySkin('${s.id}')">${data.owned.includes(s.id)?'Použít':'Koupit'}</button></div>`).join('')}
+function buySkin(id){let s=skins.find(x=>x.id===id);if(!data.owned.includes(id)){if(data.coins<s.price){showModal('Málo mincí','Zahraj si další kolo a získej více tygřích mincí.','🪙');return}data.coins-=s.price;data.owned.push(id)}data.skin=id;save();showShop()}
+let canvas=$('canvas'),ctx=canvas.getContext('2d'),raf=0,stop=true,player,obstacles,stars,score,frame,speed,ground,gameMode='island',towerMode='normal',moveDir=0,lavaPlayer=null,spacePlayer=null,spaceObjects=[],spaceStars=[],spaceFrame=0,spaceBest=0,tower={blocks:[],moving:null,dir:1,speed:3,level:0};
+function resetWorld(){player={x:115,y:340,vy:0,on:true};obstacles=[];stars=[];score=0;frame=0;speed=5;ground=370;$('score').textContent=0}
+function startGame(){$('campaignPanel').style.display='none';$('factoryPanel').style.display='none';$('gameControls').style.display='flex';gameMode='island';$('gameTitle').textContent='🌴 Tygří ostrov';$('towerSelect').style.display='none';$('canvasWrap').style.display='block';$('lavaControls').style.display='none';$('controlHint').textContent='Počítač: mezerník / šipka nahoru • Mobil: klepni pro skok';$('canvas').setAttribute('aria-label','Herní plocha Tygří ostrov');show('game');restartGame()}
+function startTower(){$('campaignPanel').style.display='none';$('factoryPanel').style.display='none';$('gameControls').style.display='flex';stop=true;gameMode='tower';$('gameTitle').textContent='🏗️ Tygří věž';$('towerSelect').style.display='block';$('canvasWrap').style.display='none';$('gameControls').style.display='none';show('game')}
+function startTowerMode(mode){towerMode=mode;$('towerSelect').style.display='none';$('canvasWrap').style.display='block';$('gameControls').style.display='flex';$('gameTitle').textContent=mode==='lava'?'🌋 Věž: Země je láva':'🏗️ Normální věž';$('lavaControls').style.display=mode==='lava'?'flex':'none';$('controlHint').textContent=mode==='lava'?'Přejeď prstem doleva nebo doprava pro pohyb. Klepnutím vyskočíš. Láva zrychluje!':'Klepni na plochu nebo stiskni mezerník a polož kostku.';$('canvas').setAttribute('aria-label',mode==='lava'?'Země je láva – utíkej nahoru':'Normální stavění věže');restartGame()}
+function startSpace(){
+ $('factoryPanel').style.display='none';$('gameControls').style.display='flex';gameMode='space';$('gameTitle').textContent='🚀 Tygří vesmír';$('towerSelect').style.display='none';
+ $('canvasWrap').style.display='block';$('gameControls').style.display='flex';$('lavaControls').style.display='none';
+ $('controlHint').textContent='Telefon: táhni prstem a loď tě bude následovat. Počítač: myš nebo šipky / A-D.';
+ $('canvas').setAttribute('aria-label','Tygří vesmír – pilotuj loď a vyhýbej se asteroidům');
+ show('game');restartGame();
+}
+function resetSpace(){
+ score=0;spaceFrame=0;spaceObjects=[];spaceStars=[];
+ spacePlayer={x:450,y:380,targetX:450,targetY:380};
+ $('score').textContent='0';
+}
+
+let factoryRoom=1,factorySequence=[],factoryInput=[],factoryCode=0,factoryKey=0,factoryLocked=false;
+function startFactory(){
+ gameMode='factory';stop=true;cancelAnimationFrame(raf);
+ $('gameTitle').textContent='🏭 Tajemná továrna';
+ $('towerSelect').style.display='none';$('canvasWrap').style.display='none';
+ $('lavaControls').style.display='none';$('gameControls').style.display='none';
+ $('factoryPanel').style.display='block';show('game');factoryRoomOne();
+}
+function factorySet(title,desc,html){
+ $('factoryTitle').textContent=title;$('factoryText').textContent=desc;
+ $('factoryTask').innerHTML=html;$('factoryFeedback').textContent='';
+ $('factoryProgress').textContent='MÍSTNOST '+factoryRoom+' / 3';
+}
+function factoryRoomOne(){
+ factoryRoom=1;factoryLocked=false;factorySequence=Array.from({length:6},()=>Math.floor(Math.random()*4));factoryInput=[];
+ const icons=['🔴','🔵','🟡','🟢'];
+ factorySet('Místnost 1: Nastartuj generátor','Zapamatuj si pořadí symbolů a potom ho zopakuj.',`<div class="factory-buttons">${factorySequence.map(n=>`<div style="background:#26374b;color:white;border-radius:12px;padding:13px;text-align:center;font-size:25px">${icons[n]}</div>`).join('')}</div><p style="text-align:center;font-weight:900">Teď klikni na symboly ve stejném pořadí:</p><div class="factory-buttons">${icons.map((ic,i)=>`<button onclick="factoryPress(${i})">${ic}</button>`).join('')}</div><p style="text-align:center;font-weight:900">Zadáno: <span id="factoryEntered">—</span></p>`);
+}
+function factoryPress(n){
+ if(factoryRoom!==1||factoryLocked)return;
+ factoryInput.push(n);const icons=['🔴','🔵','🟡','🟢'];
+ $('factoryEntered').textContent=factoryInput.map(x=>icons[x]).join(' ');
+ if(factoryInput[factoryInput.length-1]!==factorySequence[factoryInput.length-1]){
+  factoryLocked=true;$('factoryFeedback').textContent='❌ Špatné pořadí! Zkus místnost znovu.';
+  setTimeout(()=>{if(factoryRoom===1)factoryRoomOne()},850);return;
+ }
+ if(factoryInput.length===factorySequence.length){factoryRoom=2;factoryRoomTwo()}
+}
+function factoryRoomTwo(){
+ factoryRoom=2;const a=Math.floor(6+Math.random()*9),b=Math.floor(4+Math.random()*8);factoryCode=a*b;
+ const answers=[factoryCode,factoryCode+2,factoryCode-3,factoryCode+5].sort(()=>Math.random()-.5);
+ factorySet('Místnost 2: Bezpečnostní terminál','Vyřeš příklad a zadej správný číselný kód.',`<div style="text-align:center;background:#26374b;color:#fff;border-radius:14px;padding:18px;font-size:27px;font-weight:1000">${a} × ${b} = ?</div><div class="factory-buttons" style="margin-top:12px">${answers.map(v=>`<button onclick="factoryAnswer(${v})">${v}</button>`).join('')}</div>`);
+}
+function factoryAnswer(v){
+ if(factoryRoom!==2)return;
+ if(v===factoryCode){factoryRoom=3;factoryRoomThree()}
+ else $('factoryFeedback').textContent='❌ Nesprávný kód. Zkus to znovu!';
+}
+function factoryRoomThree(){
+ factoryRoom=3;factoryKey=Math.floor(Math.random()*4);
+ const levers=['🟥','🟦','🟨','🟩'],clues=['červenou','modrou','žlutou','zelenou'];
+ factorySet('Místnost 3: Otevři únikové dveře','Poslední úkol: zatáhni za '+clues[factoryKey]+' páku.',`<div class="factory-buttons">${levers.map((v,i)=>`<button onclick="factoryEscape(${i})">${v}</button>`).join('')}</div><p style="text-align:center;font-weight:900">Najdi správnou páku a uteč!</p>`);
+}
+function factoryEscape(n){
+ if(factoryRoom!==3)return;
+ if(n!==factoryKey){$('factoryFeedback').textContent='❌ To nebyla správná páka. Zkus jinou!';return}
+ factoryRoom=4;data.coins+=35;data.xp+=50;save();
+ $('factoryProgress').textContent='HOTOVO!';$('factoryTitle').textContent='🎉 Úspěšný útěk!';
+ $('factoryText').textContent='Odemkl/a jsi všechny dveře a dostal/a ses z Tajemné továrny!';
+ $('factoryTask').innerHTML='<div style="text-align:center;font-size:65px">🐯 🏆 🚪</div><p style="text-align:center;font-weight:1000">ODMĚNA: +35 T$ a +50 XP</p><button class="action" onclick="startFactory()">Hrát znovu</button> <button class="back" onclick="backMenu()">Zpět do menu</button>';
+ $('factoryFeedback').textContent='Továrna je pokořena!';
+}
+
+
+// TOVÁRNÍ MISE – 50 postupně náročnějších úrovní
+let campaignAnswer=0,campaignTaskType=0,campaignSequence=[],campaignInput=[];
+function startFactoryCampaign(){
+ stop=true;cancelAnimationFrame(raf);gameMode='campaign';
+ $('gameTitle').textContent='🧑‍🔧 Tovární mise';$('towerSelect').style.display='none';
+ $('canvasWrap').style.display='none';$('factoryPanel').style.display='none';$('gameControls').style.display='none';
+ $('campaignPanel').style.display='block';show('game');renderCampaignLevel();
+}
+function renderCampaignLevel(){
+ const lv=Math.min(50,Math.max(1,data.factoryLevel||1));$('campaignLevel').textContent='LEVEL '+lv+' / 50';
+ $('campaignFeedback').textContent='';$('campaignTitle').textContent='Level '+lv+': '+(['Start stroje','Kontrola součástek','Bezpečnostní kód','Skladová hádanka','Finální kontrola'][((lv-1)%5)]);
+ const type=(lv-1)%3;campaignTaskType=type;
+ if(type===0){
+  const count=Math.min(8,3+Math.floor(lv/8));campaignSequence=Array.from({length:count},()=>Math.floor(Math.random()*4));campaignInput=[];
+  const icons=['🔴','🔵','🟡','🟢'];
+  $('campaignDesc').textContent='Zapamatuj si '+count+' světel a zopakuj jejich pořadí. Čím vyšší level, tím delší sekvence.';
+  $('campaignTask').innerHTML=`<div class="factory-buttons">${campaignSequence.map(n=>`<div style="background:#26374b;color:white;border-radius:10px;padding:9px;text-align:center">${icons[n]}</div>`).join('')}</div><p>Opakuj pořadí:</p><div class="factory-buttons">${icons.map((x,i)=>`<button onclick="campaignPress(${i})">${x}</button>`).join('')}</div><p>Zadáno: <span id="campaignEntered">—</span></p>`;
+ }else{
+  const a=2+Math.floor(Math.random()*(4+lv/5)),b=2+Math.floor(Math.random()*(3+lv/6));
+  campaignAnswer=type===1?a*b:a+b+lv;
+  const symbol=type===1?'×':'+';
+  const wrong=[campaignAnswer+2,campaignAnswer-1,campaignAnswer+4].filter(x=>x>=0);
+  const opts=[campaignAnswer,...wrong].sort(()=>Math.random()-.5);
+  $('campaignDesc').textContent=type===1?'Vypočítej násobení na terminálu.':'Vyřeš skladový výpočet: sečti čísla a přičti číslo levelu.';
+  $('campaignTask').innerHTML=`<div style="text-align:center;background:#26374b;color:white;border-radius:13px;padding:17px;font-size:27px;font-weight:1000">${type===1?`${a} ${symbol} ${b}`:`${a} + ${b} + ${lv}`} = ?</div><div class="factory-buttons" style="margin-top:10px">${opts.map(v=>`<button onclick="campaignChoose(${v})">${v}</button>`).join('')}</div>`;
+ }
+ $('campaignTask').innerHTML+=`<div class="game-hint">Dokončeno: ${data.factoryDone.length} / 50 levelů • Další odměna: ${10+lv*2} T$</div><div class="campaign-grid">${Array.from({length:50},(_,i)=>`<button class="${data.factoryDone.includes(i+1)?'done':i+1===lv?'current':'locked'}" ${i+1>lv?'disabled':''}>${i+1}</button>`).join('')}</div>`;
+}
+function campaignPress(n){
+ const icons=['🔴','🔵','🟡','🟢'];campaignInput.push(n);
+ const el=$('campaignEntered');if(el)el.textContent=campaignInput.map(x=>icons[x]).join(' ');
+ if(campaignInput[campaignInput.length-1]!==campaignSequence[campaignInput.length-1]){campaignInput=[];$('campaignFeedback').textContent='❌ Chyba! Začni sekvenci znovu.';if(el)el.textContent='—';return}
+ if(campaignInput.length===campaignSequence.length)campaignWin();
+}
+function campaignChoose(n){if(n===campaignAnswer)campaignWin();else $('campaignFeedback').textContent='❌ Špatná odpověď. Zkus to znovu.'}
+function campaignWin(){
+ const lv=data.factoryLevel||1;if(data.factoryDone.includes(lv))return;
+ const reward=10+lv*2;data.factoryDone.push(lv);data.coins+=reward;data.xp+=15+lv*3;
+ if(lv<50)data.factoryLevel=lv+1;save();
+ $('campaignLevel').textContent=lv===50?'50 / 50 – HOTOVO!':'LEVEL '+lv+' SPLNĚN';
+ $('campaignTitle').textContent=lv===50?'🏆 Dokončil/a jsi všech 50 levelů!':'🎉 Level '+lv+' dokončen!';
+ $('campaignDesc').textContent='Získáváš '+reward+' T$ a '+(15+lv*3)+' XP. '+(lv===50?'Jsi mistr továrny!':'Další level je odemčen – a bude těžší.');
+ $('campaignTask').innerHTML=`<div style="text-align:center;font-size:58px">🏭 ⭐ 🏆</div><button class="action" onclick="renderCampaignLevel()">${lv===50?'Zopakovat level 50':'Pokračovat na level '+(lv+1)}</button>`;
+ $('campaignFeedback').textContent='Skvělá práce! Odměna připsána.';
+}
+// LOV TYGRŮ – chytání přátelských tygrů do záchranné přepravky
+let catchPlayer=450,catchTigers=[],catchFrame=0,catchScore=0,catchMiss=0;
+function startTigerCatch(){
+ gameMode='catch';$('factoryPanel').style.display='none';$('campaignPanel').style.display='none';
+ $('gameTitle').textContent='🐯 Lov tygříků';$('towerSelect').style.display='none';$('canvasWrap').style.display='block';
+ $('gameControls').style.display='flex';$('lavaControls').style.display='none';$('controlHint').textContent='Táhni prstem / myší doleva a doprava a chytej tygříky do přepravky.';
+ $('canvas').setAttribute('aria-label','Chytání tygříků do záchranné přepravky');show('game');restartGame();
+}
+function resetCatch(){catchPlayer=450;catchTigers=[];catchFrame=0;catchScore=0;catchMiss=0;$('score').textContent='0';stop=false;catchLoop()}
+function catchLoop(){
+ if(stop)return;catchFrame++;if(catchFrame%Math.max(18,48-Math.floor(catchScore/5))===0)catchTigers.push({x:35+Math.random()*830,y:-35,v:2.4+Math.random()*2+catchScore*.025,phase:Math.random()*6});
+ catchTigers.forEach(t=>{t.y+=t.v;t.x+=Math.sin(catchFrame/12+t.phase)*1.8});
+ catchTigers=catchTigers.filter(t=>{if(t.y>385&&Math.abs(t.x-catchPlayer)<62){catchScore+=10;return false}if(t.y>470){catchMiss++;return false}return true});
+ drawCatch();$('score').textContent=catchScore;
+ if(catchMiss>=5){catchEnd();return}raf=requestAnimationFrame(catchLoop)
+}
+function drawCatch(){
+ let g=ctx.createLinearGradient(0,0,0,470);g.addColorStop(0,'#a8e5ff');g.addColorStop(1,'#b4e5a5');ctx.fillStyle=g;ctx.fillRect(0,0,900,470);
+ ctx.fillStyle='#527c54';ctx.fillRect(0,420,900,50);
+ catchTigers.forEach(t=>{ctx.font='36px sans-serif';ctx.fillText('🐯',t.x-18,t.y)});
+ ctx.font='42px sans-serif';ctx.fillText('📦',catchPlayer-25,420);
+ ctx.fillStyle='#263238';ctx.font='bold 18px system-ui';ctx.fillText('ZÁCHRANY: '+catchScore+'   UTEKLI: '+catchMiss+'/5',20,30);
+}
+function catchEnd(){stop=true;const earned=Math.max(5,Math.floor(catchScore/5));data.coins+=earned;data.xp+=Math.floor(catchScore/2);save();showModal('Konec odchytu','Zachránil/a jsi '+catchScore/10+' tygříků a získal/a '+earned+' T$.','🐯','Zkusit znovu')}
+function moveCatch(e){if(gameMode!=='catch'||!catchPlayer)return;const r=canvas.getBoundingClientRect();catchPlayer=Math.max(35,Math.min(865,(e.clientX-r.left)/r.width*900))}
+canvas.addEventListener('pointermove',moveCatch);
+// OBRANA VĚŽE – barevné konfety zpomalují a odklánějí legrační válečníky
+let defenseWave=1,defenseEnemies=[],defenseShots=[],defenseFrame=0,defenseHealth=100,defenseScore=0,defenseAim=450;
+function startDefense(){
+ gameMode='defense';$('factoryPanel').style.display='none';$('campaignPanel').style.display='none';
+ $('gameTitle').textContent='🛡️ Obrana věže';$('towerSelect').style.display='none';$('canvasWrap').style.display='block';
+ $('gameControls').style.display='flex';$('lavaControls').style.display='none';$('controlHint').textContent='Klikni nebo klepni na místo na cestě a vystřel konfety, které zastaví válečníky.';
+ $('canvas').setAttribute('aria-label','Obrana věže před legračními tygřími válečníky');show('game');restartGame();
+}
+function resetDefense(){defenseWave=1;defenseEnemies=[];defenseShots=[];defenseFrame=0;defenseHealth=100;defenseScore=0;defenseAim=450;$('score').textContent='0';stop=false;defenseLoop()}
+function defenseLoop(){
+ if(stop)return;defenseFrame++;
+ const interval=Math.max(30,90-defenseWave*5);
+ if(defenseFrame%interval===0)defenseEnemies.push({x:900,y:90+Math.random()*290,hp:1+Math.floor(defenseWave/3),speed:1.1+defenseWave*.12});
+ defenseShots.forEach(sh=>{sh.x+=(sh.tx-sh.x)*.18;sh.y+=(sh.ty-sh.y)*.18});
+ defenseEnemies.forEach(en=>{en.x-=en.speed});
+ defenseShots=defenseShots.filter(sh=>Math.hypot(sh.x-sh.tx,sh.y-sh.ty)>8);
+ for(const en of defenseEnemies){for(const sh of defenseShots){if(!sh.hit&&Math.hypot(en.x-sh.x,en.y-sh.y)<28){sh.hit=true;en.hp--;if(en.hp<=0){en.dead=true;defenseScore+=10}}}}
+ defenseShots=defenseShots.filter(sh=>!sh.hit);
+ defenseEnemies=defenseEnemies.filter(en=>{if(en.dead)return false;if(en.x<125){defenseHealth-=12;return false}return true});
+ if(defenseScore>=defenseWave*60){defenseWave++;defenseHealth=Math.min(100,defenseHealth+8)}
+ $('score').textContent=defenseScore;drawDefense();
+ if(defenseHealth<=0){defenseEnd();return}raf=requestAnimationFrame(defenseLoop)
+}
+function drawDefense(){
+ let g=ctx.createLinearGradient(0,0,0,470);g.addColorStop(0,'#b9d8ff');g.addColorStop(1,'#e5f0c8');ctx.fillStyle=g;ctx.fillRect(0,0,900,470);
+ ctx.fillStyle='#7ebd80';ctx.fillRect(0,395,900,75);
+ ctx.fillStyle='#64748b';ctx.fillRect(125,100,36,295);ctx.fillStyle='#a9bacb';ctx.fillRect(133,115,20,270);
+ ctx.font='38px sans-serif';ctx.fillText('🏰',70,125);
+ defenseEnemies.forEach(en=>{ctx.font='30px sans-serif';ctx.fillText('🐯',en.x-15,en.y+10);ctx.fillStyle='#e54b4b';ctx.fillRect(en.x-16,en.y-20,32,5);ctx.fillStyle='#4ac477';ctx.fillRect(en.x-16,en.y-20,32*en.hp/(1+Math.floor(defenseWave/3)),5)});
+ defenseShots.forEach(sh=>{ctx.font='25px sans-serif';ctx.fillText('🎉',sh.x-12,sh.y+8)});
+ ctx.fillStyle='#263238';ctx.font='bold 17px system-ui';ctx.fillText('VLNA '+defenseWave+'   OCHRANA '+Math.max(0,defenseHealth)+'%',20,28);
+}
+function fireDefense(e){
+ if(gameMode!=='defense'||stop)return;const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*900,y=(e.clientY-r.top)/r.height*470;
+ defenseShots.push({x:150,y:365,tx:Math.max(170,Math.min(880,x)),ty:Math.max(55,Math.min(385,y)),hit:false});
+}
+canvas.addEventListener('pointerdown',e=>{if(gameMode==='defense')fireDefense(e)});
+function defenseEnd(){stop=true;const earned=Math.floor(defenseScore/4);data.coins+=earned;data.xp+=defenseScore;save();showModal('Věž potřebuje opravu','Udržel/a jsi '+(defenseWave-1)+' vln a získal/a '+earned+' T$.','🛡️','Zkusit znovu')}
+
+function restartGame(){cancelAnimationFrame(raf);if(gameMode==='catch'){resetCatch()}else if(gameMode==='defense'){resetDefense()}else if(gameMode==='tower'){if(towerMode==='lava')resetLavaTower();else resetTower()}else if(gameMode==='space'){resetSpace()}else{resetWorld()}stop=false;loop()}
+function jump(){if(gameMode==='island'&&!stop&&player.on){player.vy=-15;player.on=false}}
+function lavaJump(){if(gameMode==='tower'&&towerMode==='lava'&&!stop&&lavaPlayer&&lavaPlayer.on){lavaPlayer.vy=-15.2;lavaPlayer.on=false}}
+function holdMove(dir,e){if(e)e.preventDefault();moveDir=dir}
+function releaseMove(e){if(e)e.preventDefault();moveDir=0}
+function dropBlock(){if(gameMode!=='tower'||stop||!tower.moving)return;let m=tower.moving,prev=tower.blocks[tower.blocks.length-1];let left=Math.max(m.x,prev.x),right=Math.min(m.x+m.w,prev.x+prev.w),overlap=right-left;if(overlap<12){towerEnd();return}let perfect=Math.abs(overlap-prev.w)<8;if(perfect){left=prev.x;overlap=prev.w}tower.blocks.push({x:left,w:overlap});tower.level++;score=tower.level*10;$('score').textContent=score;tower.speed=Math.min(8,3+tower.level*.18);tower.moving={x:tower.dir>0?30:canvas.width-overlap-30,y:0,w:overlap};tower.dir=tower.dir>0?-1:1;if(tower.level>=18){towerEnd(true)}}
+let touchStartX=null,touchStartY=null,touchDragged=false;
+ canvas.addEventListener('pointerdown',e=>{
+   e.preventDefault();
+   if(gameMode==='tower'&&towerMode==='lava'){
+     touchStartX=e.clientX;touchStartY=e.clientY;touchDragged=false;
+     try{canvas.setPointerCapture(e.pointerId)}catch(_){}
+   }else if(gameMode==='tower'){dropBlock()}else if(gameMode==='island'){jump()}
+ });
+ canvas.addEventListener('pointermove',e=>{
+   if(gameMode==='space'&&spacePlayer){const r=canvas.getBoundingClientRect();spacePlayer.targetX=(e.clientX-r.left)/r.width*canvas.width;spacePlayer.targetY=(e.clientY-r.top)/r.height*canvas.height;return;}if(gameMode==='catch'){moveCatch(e);return;}
+   if(touchStartX===null||gameMode!=='tower'||towerMode!=='lava')return;
+   const dx=e.clientX-touchStartX;
+   if(Math.abs(dx)>12){touchDragged=true;moveDir=dx>0?1:-1}
+ });
+ function finishTouch(e){
+   if(touchStartX===null)return;
+   if(!touchDragged)lavaJump();
+   touchStartX=null;touchStartY=null;touchDragged=false;moveDir=0;
+ }
+ canvas.addEventListener('pointerup',finishTouch);
+ canvas.addEventListener('pointercancel',()=>{touchStartX=null;touchStartY=null;touchDragged=false;moveDir=0});
+document.addEventListener('keydown',e=>{if(!$('game').classList.contains('active'))return;if(['Space','ArrowUp','KeyW','Enter'].includes(e.code)){e.preventDefault();if(gameMode==='tower'){if(towerMode==='lava')lavaJump();else dropBlock()}else if(gameMode==='island')jump()}if(gameMode==='space'&&spacePlayer){if(['ArrowLeft','KeyA'].includes(e.code))spacePlayer.targetX-=65;if(['ArrowRight','KeyD'].includes(e.code))spacePlayer.targetX+=65;if(['ArrowUp','KeyW'].includes(e.code))spacePlayer.targetY-=55;if(['ArrowDown','KeyS'].includes(e.code))spacePlayer.targetY+=55;}if(gameMode==='tower'&&towerMode==='lava'){if(['ArrowLeft','KeyA'].includes(e.code))moveDir=-1;if(['ArrowRight','KeyD'].includes(e.code))moveDir=1}});document.addEventListener('keyup',e=>{if(['ArrowLeft','ArrowRight','KeyA','KeyD'].includes(e.code))moveDir=0});
+function rounded(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function drawTiger(){let skin=skins.find(s=>s.id===data.skin)||skins[0];ctx.save();ctx.translate(player.x,player.y);
+ // shadow
+ ctx.fillStyle='#356c54';ctx.beginPath();ctx.ellipse(0,33,30,7,0,0,Math.PI*2);ctx.fill();
+ // body and head
+ ctx.fillStyle=data.skin==='robot'?'#9ba9b6':data.skin==='cool'?'#ff9a35':'#ff922e';
+ ctx.beginPath();ctx.ellipse(0,0,24,29,0,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(0,-25,25,0,Math.PI*2);ctx.fill();
+ // ears
+ ctx.beginPath();ctx.arc(-17,-44,9,0,Math.PI*2);ctx.arc(17,-44,9,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#fff1d6';ctx.beginPath();ctx.ellipse(0,-17,14,10,0,0,Math.PI*2);ctx.fill();
+ // stripes
+ ctx.strokeStyle='#29333a';ctx.lineWidth=5;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(-18,-8);ctx.lineTo(-10,2);ctx.moveTo(18,-8);ctx.lineTo(10,2);ctx.moveTo(-18,-35);ctx.lineTo(-12,-27);ctx.moveTo(18,-35);ctx.lineTo(12,-27);ctx.stroke();
+ ctx.fillStyle='#202a30';ctx.beginPath();ctx.arc(-8,-27,3,0,Math.PI*2);ctx.arc(8,-27,3,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(0,-17,4,0,Math.PI*2);ctx.fill();
+ if(data.skin==='crown'){ctx.font='25px sans-serif';ctx.fillText('👑',-13,-48)}
+ if(data.skin==='cool'){ctx.font='22px sans-serif';ctx.fillText('🕶️',-13,-24)}
+ ctx.restore()}
+function drawBackground(){let g=ctx.createLinearGradient(0,0,0,470);g.addColorStop(0,'#8be0ec');g.addColorStop(.7,'#c8f0c5');g.addColorStop(1,'#5fbd82');ctx.fillStyle=g;ctx.fillRect(0,0,900,470);
+ // sun
+ ctx.fillStyle='#ffe16a';ctx.beginPath();ctx.arc(760,85,43,0,Math.PI*2);ctx.fill();
+ // distant hills
+ ctx.fillStyle='#78c99a';ctx.beginPath();ctx.moveTo(0,300);ctx.quadraticCurveTo(150,160,300,300);ctx.quadraticCurveTo(470,160,630,300);ctx.quadraticCurveTo(780,190,900,285);ctx.lineTo(900,470);ctx.lineTo(0,470);ctx.fill();
+ // clouds
+ ctx.fillStyle='#ffffffb8';[120,430,650].forEach((x,i)=>{let y=75+i%2*45;ctx.beginPath();ctx.arc(x,y,19,0,7);ctx.arc(x+23,y-8,25,0,7);ctx.arc(x+48,y,18,0,7);ctx.fill()});
+ ctx.fillStyle='#39875d';ctx.fillRect(0,ground,900,100);ctx.fillStyle='#75d18b';ctx.fillRect(0,ground,900,9);
+ for(let x=0;x<900;x+=45){ctx.fillStyle='#54ad72';ctx.fillRect((x-frame*speed*.6%45),ground+18,20,5)}
+}
+function loop(){if(stop)return;if(gameMode==='tower'){if(towerMode==='lava')lavaTowerLoop();else towerLoop();return}if(gameMode==='space'){spaceLoop();return}if(gameMode==='catch'){catchLoop();return}if(gameMode==='defense'){defenseLoop();return}frame++;if(frame%Math.max(48,78-Math.floor(score/22))===0){obstacles.push({x:930,w:35+Math.random()*28,h:32+Math.random()*35,type:Math.random()>.5?'crate':'log',scored:false})}
+ if(frame%95===0){stars.push({x:930,y:255-Math.random()*105,taken:false})}
+ speed=6.5+Math.min(7,score/65);player.vy+=.72;player.y+=player.vy;if(player.y>=340){player.y=340;player.vy=0;player.on=true}
+ obstacles.forEach(o=>o.x-=speed);stars.forEach(s=>s.x-=speed);
+ obstacles=obstacles.filter(o=>o.x>-80);stars=stars.filter(s=>s.x>-30&&!s.taken);
+ for(let o of obstacles){
+   if(player.x+17>o.x&&player.x-17<o.x+o.w&&player.y+24>ground-o.h){endGame();return}
+   // Bod se přičte až ve chvíli, kdy tygr bezpečně přeskočí překážku.
+   if(!o.scored && o.x+o.w<player.x){o.scored=true;score+=1}
+  }
+ for(let s of stars){if(Math.abs(s.x-player.x)<27&&Math.abs(s.y-(player.y-20))<34){s.taken=true;score+=5}}
+ $('score').textContent=Math.floor(score);
+ drawBackground();
+ // palms
+ for(let x=40-(frame*speed*.25%250);x<950;x+=250){ctx.fillStyle='#9a6839';ctx.fillRect(x,ground-70,12,70);ctx.strokeStyle='#238b58';ctx.lineWidth=13;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x+6,ground-68);ctx.quadraticCurveTo(x-25,ground-110,x-38,ground-103);ctx.moveTo(x+6,ground-68);ctx.quadraticCurveTo(x+25,ground-115,x+48,ground-103);ctx.stroke()}
+ obstacles.forEach(o=>{if(o.type==='log'){ctx.fillStyle='#9b5d32';ctx.beginPath();ctx.roundRect(o.x,ground-o.h,o.w,o.h,15);ctx.fill();ctx.strokeStyle='#d89a55';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(o.x+o.w-5,ground-o.h/2,5,o.h/2-3,0,0,7);ctx.stroke()}else{rounded(o.x,ground-o.h,o.w,o.h,8,'#b96f3c');rounded(o.x+5,ground-o.h+6,o.w-10,7,4,'#e5b16d');ctx.strokeStyle='#754326';ctx.lineWidth=3;ctx.strokeRect(o.x+5,ground-o.h+5,o.w-10,o.h-10)}});
+ stars.forEach(s=>{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(Math.sin(frame/10)*.18);ctx.font='31px sans-serif';ctx.fillText('⭐',-15,10);ctx.restore()});
+ drawTiger();
+ ctx.fillStyle='#ffffffd9';rounded(18,17,165,42,13,'#ffffffc9');ctx.fillStyle='#344';ctx.font='bold 19px system-ui';ctx.fillText('SKÓRE: '+Math.floor(score),31,45);
+ raf=requestAnimationFrame(loop)}
+function endGame(){stop=true;cancelAnimationFrame(raf);let pts=Math.floor(score),earned=Math.max(5,Math.floor(pts/3)),record=pts>data.best;if(record)data.best=pts;data.coins+=earned;data.xp+=Math.max(5,Math.floor(pts/2));save();showModal('Konec hry!','Získal/a jsi '+pts+' bodů a '+earned+' tygřích mincí. '+(record?'Nový rekord!':''),'🏆','Zkusit znovu')}
+function spaceLoop(){
+ if(stop)return;spaceFrame++;const p=spacePlayer;
+ p.x+=(p.targetX-p.x)*.18;p.y+=(p.targetY-p.y)*.18;
+ p.x=Math.max(35,Math.min(865,p.x));p.y=Math.max(65,Math.min(430,p.y));
+ const difficulty=Math.min(5,spaceFrame/900);
+ if(spaceFrame%Math.max(22,48-Math.floor(difficulty*5))===0){
+   spaceObjects.push({x:35+Math.random()*830,y:-35,r:17+Math.random()*20,vy:3+difficulty*.7,vx:(Math.random()-.5)*1.8});
+ }
+ if(spaceFrame%72===0)spaceStars.push({x:40+Math.random()*820,y:-20,vy:3.2+difficulty*.45});
+ spaceObjects.forEach(o=>{o.x+=o.vx;o.y+=o.vy});spaceStars.forEach(o=>o.y+=o.vy);
+ spaceObjects=spaceObjects.filter(o=>o.y<520);spaceStars=spaceStars.filter(o=>o.y<500);
+ for(const o of spaceObjects){if(Math.hypot(p.x-o.x,p.y-o.y)<o.r+22){spaceEnd();return}}
+ for(const st of spaceStars){if(!st.taken&&Math.hypot(p.x-st.x,p.y-st.y)<30){st.taken=true;score+=5}}
+ spaceStars=spaceStars.filter(st=>!st.taken);
+ if(spaceFrame%120===0)score+=1;
+ $('score').textContent=score;drawSpace();raf=requestAnimationFrame(spaceLoop);
+}
+function drawSpace(){
+ const g=ctx.createLinearGradient(0,0,0,470);g.addColorStop(0,'#10143d');g.addColorStop(1,'#34245e');ctx.fillStyle=g;ctx.fillRect(0,0,900,470);
+ for(let i=0;i<75;i++){let x=(i*127+spaceFrame*(i%3+1)*.35)%900,y=(i*71+spaceFrame*(i%4+1)*.7)%470;ctx.fillStyle=i%5===0?'#ffe58a':'#ffffff';ctx.fillRect(x,y,i%5===0?3:2,i%5===0?3:2)}
+ ctx.fillStyle='#8b6cff';ctx.beginPath();ctx.arc(735,105,58,0,7);ctx.fill();ctx.fillStyle='#c4a8ff';ctx.beginPath();ctx.arc(715,88,14,0,7);ctx.arc(755,125,20,0,7);ctx.fill();
+ spaceObjects.forEach(o=>{ctx.fillStyle='#8b929f';ctx.beginPath();for(let i=0;i<9;i++){let a=i*Math.PI*2/9,rr=o.r*(.78+((i*7)%3)*.12);let x=o.x+Math.cos(a)*rr,y=o.y+Math.sin(a)*rr;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath();ctx.fill();ctx.strokeStyle='#c5c8d0';ctx.lineWidth=3;ctx.stroke()});
+ spaceStars.forEach(st=>{ctx.font='27px sans-serif';ctx.fillText('⭐',st.x-13,st.y+10)});
+ const p=spacePlayer;ctx.save();ctx.translate(p.x,p.y);ctx.font='42px sans-serif';ctx.textAlign='center';ctx.fillText('🚀',0,10);ctx.font='22px sans-serif';ctx.fillText('🐯',0,-18);ctx.restore();
+ ctx.fillStyle='#ffffffdd';rounded(18,17,220,42,13,'#ffffff24');ctx.fillStyle='#fff';ctx.font='bold 19px system-ui';ctx.fillText('VESMÍRNÉ BODY: '+score,31,45);
+}
+function spaceEnd(){
+ stop=true;cancelAnimationFrame(raf);const pts=score,earned=Math.max(5,Math.floor(pts/3));
+ data.coins+=earned;data.xp+=Math.max(5,pts);save();
+ showModal('Konec vesmírné mise!','Získal/a jsi '+pts+' bodů a '+earned+' tygřích mincí.','🚀','Zkusit znovu');
+}
+function resetTower(){score=0;frame=0;$('score').textContent='0';tower={blocks:[{x:310,w:280}],moving:{x:30,y:0,w:280},dir:1,speed:3,level:0}}
+function towerLoop(){if(stop)return;frame++;let m=tower.moving;m.x+=tower.speed*tower.dir;if(m.x<25){m.x=25;tower.dir=1}else if(m.x+m.w>875){m.x=875-m.w;tower.dir=-1}drawTower();raf=requestAnimationFrame(towerLoop)}
+
+function drawTowerTiger(cx,feetY,scale=1){
+ // Použijeme přesně stejnou kreslenou postavičku jako na Tygřím ostrově.
+ const savedPlayer=player;
+ ctx.save();ctx.translate(cx,feetY-33*scale);ctx.scale(scale,scale);
+ player={x:0,y:0};drawTiger();player=savedPlayer;
+ ctx.restore();
+}
+
+function drawTower(){let g=ctx.createLinearGradient(0,0,0,470);g.addColorStop(0,'#9bdcff');g.addColorStop(1,'#fff0bd');ctx.fillStyle=g;ctx.fillRect(0,0,900,470);ctx.fillStyle='#ffffff99';for(let i=0;i<5;i++){ctx.beginPath();ctx.arc(90+i*185,75+(i%2)*35,25,0,7);ctx.arc(120+i*185,70+(i%2)*35,32,0,7);ctx.fill()}ctx.fillStyle='#79c98c';ctx.fillRect(0,400,900,70);ctx.fillStyle='#4c9d6a';ctx.fillRect(0,400,900,12);ctx.fillStyle='#fff';ctx.font='bold 22px system-ui';ctx.fillText('KLEPNI A POLOŽ KOSTKU!',270,38);ctx.font='bold 17px system-ui';ctx.fillText('PATER: '+tower.level,24,38);let baseY=400;let colors=['#ffb43b','#ff8050','#69c5ed','#9d83e8','#65c98d'];tower.blocks.forEach((b,i)=>{let y=baseY-(i+1)*19;let c=colors[i%colors.length];rounded(b.x,y,b.w,19,4,c);ctx.strokeStyle='#ffffffaa';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.x+5,y+4);ctx.lineTo(b.x+b.w-5,y+4);ctx.stroke();ctx.fillStyle='#ffffff45';ctx.fillRect(b.x+8,y+7,Math.max(0,b.w-16),3)});let m=tower.moving;if(m){let y=baseY-(tower.blocks.length+1)*19;rounded(m.x,y,m.w,19,4,'#ff8e35');ctx.fillStyle='#ffffff70';ctx.fillRect(m.x+5,y+4,Math.max(0,m.w-10),3)}let topBlock=tower.blocks[tower.blocks.length-1],topY=baseY-tower.blocks.length*19;drawTowerTiger(Math.max(65,Math.min(835,topBlock.x+topBlock.w/2)),topY,.82);ctx.fillStyle='#263238';ctx.font='bold 15px system-ui';ctx.fillText('Čím přesněji kostku položíš, tím vyšší věž postavíš.',210,450)}
+function resetLavaTower(){
+ score=0;frame=0;moveDir=0;$('score').textContent='0';
+ // Hráč začíná přímo na první plošině (y je pozice chodidel).
+ lavaPlayer={x:450,y:390,vy:0,on:true};
+ tower={platforms:[{x:345,y:390,w:210}],lavaY:468,height:0,lavaSpeed:.58};
+}
+function lavaTowerLoop(){
+ if(stop)return;
+ frame++;
+ const p=lavaPlayer,oldY=p.y;
+ // Pohyb hráče a předvídatelná fyzika skoku.
+ p.x+=moveDir*6.2;
+ p.x=Math.max(24,Math.min(876,p.x));
+ p.vy+=.45;
+ p.y+=p.vy;
+ p.on=false;
+
+ // Přistání pouze při pádu shora. Plošiny jsou generované tak,
+ // aby byly vždy v dosahu následujícího skoku.
+ if(p.vy>0){
+   for(const pl of tower.platforms){
+     if(oldY<=pl.y && p.y>=pl.y && p.x+18>pl.x && p.x-18<pl.x+pl.w){
+       p.y=pl.y;p.vy=0;p.on=true;break;
+     }
+   }
+ }
+
+ // Kamera sleduje tygra, zatímco celý svět se posouvá dolů.
+ if(p.y<190){
+   const shift=190-p.y;
+   p.y=190;
+   tower.height+=shift;
+   tower.platforms.forEach(pl=>pl.y+=shift);
+   tower.lavaY+=shift;
+ }
+
+ // Láva začíná pomalu a postupně zrychluje, ale má rozumný limit.
+ tower.lavaSpeed=.58+Math.min(1.45,frame*.00022);
+ tower.lavaY-=tower.lavaSpeed;
+
+ // Plošiny se rozmísťují náhodně po celé šířce obrazovky.
+ // Není tu žádný vzorec vlevo-vpravo ani pravidelné schodiště.
+ // Jen hlídáme, aby další plošina zůstala v dosažitelné vzdálenosti.
+ let topPlatform=tower.platforms.reduce((a,b)=>a.y<b.y?a:b);
+ while(topPlatform.y>35){
+   const w=126+Math.random()*42;
+   const previousCenter=topPlatform.x+topPlatform.w/2;
+   const minCenter=w/2+20, maxCenter=900-w/2-20;
+   const maxReach=285;
+   let center=previousCenter;
+   let bestDistance=0;
+   // Náhodně zkoušej místa po celé obrazovce; nevybírej pevně levou/pravou stranu.
+   for(let attempt=0;attempt<30;attempt++){
+     const candidate=minCenter+Math.random()*(maxCenter-minCenter);
+     const distance=Math.abs(candidate-previousCenter);
+     if(distance<=maxReach && distance>bestDistance){
+       center=candidate;
+       bestDistance=distance;
+     }
+   }
+   // Když náhodné pokusy nevyšly, vyber náhodný dosažitelný bod.
+   if(bestDistance===0){
+     const lo=Math.max(minCenter,previousCenter-maxReach);
+     const hi=Math.min(maxCenter,previousCenter+maxReach);
+     center=lo+Math.random()*(hi-lo);
+   }
+   const gap=105+Math.random()*30;
+   const next={x:center-w/2,y:topPlatform.y-gap,w};
+   tower.platforms.push(next);
+   topPlatform=next;
+ }
+ tower.platforms=tower.platforms.filter(pl=>pl.y<520);
+ score=Math.floor(tower.height/5);
+ $('score').textContent=Math.max(0,score);
+ if(p.y>tower.lavaY-22){lavaTowerEnd();return}
+ drawLavaTower();
+ raf=requestAnimationFrame(lavaTowerLoop);
+}
+function drawLavaTower(){
+ let g=ctx.createLinearGradient(0,0,0,470);g.addColorStop(0,'#9bdcff');g.addColorStop(.6,'#ffe1a3');g.addColorStop(1,'#ff9a4d');ctx.fillStyle=g;ctx.fillRect(0,0,900,470);
+ // distant volcanoes and clouds
+ ctx.fillStyle='#8a9aa3';ctx.beginPath();ctx.moveTo(0,320);ctx.lineTo(130,165);ctx.lineTo(250,320);ctx.lineTo(390,190);ctx.lineTo(535,320);ctx.lineTo(700,155);ctx.lineTo(900,330);ctx.lineTo(900,470);ctx.lineTo(0,470);ctx.fill();
+ ctx.fillStyle='#fff4df';ctx.beginPath();ctx.arc(150,75,22,0,7);ctx.arc(180,68,30,0,7);ctx.arc(210,78,20,0,7);ctx.fill();
+ // platforms
+ tower.platforms.forEach((pl,i)=>{rounded(pl.x,pl.y,pl.w,17,7,i%2?'#5ebc85':'#e9a64d');rounded(pl.x+5,pl.y+3,pl.w-10,4,3,'#ffffff88');ctx.fillStyle='#6b4c35';ctx.fillRect(pl.x+12,pl.y+17,7,8);ctx.fillRect(pl.x+pl.w-19,pl.y+17,7,8)});
+ // lava sea, waves
+ let ly=tower.lavaY;let lg=ctx.createLinearGradient(0,ly,0,470);lg.addColorStop(0,'#ffb02e');lg.addColorStop(.35,'#ff652e');lg.addColorStop(1,'#bd271d');ctx.fillStyle=lg;ctx.fillRect(0,ly,900,470-ly);ctx.fillStyle='#ffe45a';ctx.beginPath();ctx.moveTo(0,ly);for(let x=0;x<=900;x+=30)ctx.lineTo(x,ly+Math.sin((x+frame*5)/28)*7);ctx.lineTo(900,470);ctx.lineTo(0,470);ctx.fill();
+ drawTowerTiger(lavaPlayer.x,lavaPlayer.y,.95);
+ ctx.fillStyle='#fff';rounded(18,17,220,42,13,'#ffffffd9');ctx.fillStyle='#382d28';ctx.font='bold 19px system-ui';ctx.fillText('ÚNIK PŘED LÁVOU!',31,45);
+ ctx.fillStyle='#fff';ctx.font='bold 18px system-ui';ctx.fillText('VÝŠKA: '+Math.max(0,Math.floor(score))+' m',710,43);
+ ctx.font='bold 13px system-ui';ctx.fillText('RYCHLOST LÁVY: '+(tower.lavaSpeed||.15).toFixed(2),710,62);
+}
+function lavaTowerEnd(){stop=true;cancelAnimationFrame(raf);let pts=Math.max(0,Math.floor(score)),earned=Math.max(5,Math.floor(pts/2)),record=pts>data.lavaBest;if(record)data.lavaBest=pts;data.coins+=earned;data.xp+=Math.max(5,pts);save();showModal('Láva tě dohnala!','Dostal/a ses do výšky '+pts+' m a získal/a '+earned+' tygřích mincí. '+(record?'Nový rekord!':''),'🌋','Zkusit znovu')}
+function towerEnd(won=false){stop=true;cancelAnimationFrame(raf);let level=tower.level,earned=Math.max(5,level*4),record=level>data.towerBest;if(record)data.towerBest=level;data.coins+=earned;data.xp+=level*8;save();showModal(won?'Úžasná věž!':'Věž spadla!','Postavil/a jsi '+level+' pater a získal/a '+earned+' tygřích mincí. '+(record?'Nový rekord!':''),'🏗️','Zkusit znovu')}
+refresh();
+</script>
+</body></html>
